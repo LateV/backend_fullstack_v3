@@ -43,6 +43,16 @@ $autoload['packages'] = [];
 
 /*
 | -------------------------------------------------------------------
+|  Auto-load Helper Files
+| -------------------------------------------------------------------
+| Prototype:
+|
+|	$autoload['helper'] = array('url', 'file');
+*/
+$autoload['helper'] = ['url', 'cookie', 'cms']; //'cms'
+
+/*
+| -------------------------------------------------------------------
 |  Auto-load Libraries
 | -------------------------------------------------------------------
 | These are the classes located in system/libraries/ or your
@@ -74,16 +84,6 @@ $autoload['libraries'] = ['session', 'sparrow_starter'];
 |	$autoload['drivers'] = array('cache');
 */
 $autoload['drivers'] = [];
-
-/*
-| -------------------------------------------------------------------
-|  Auto-load Helper Files
-| -------------------------------------------------------------------
-| Prototype:
-|
-|	$autoload['helper'] = array('url', 'file');
-*/
-$autoload['helper'] = ['url', 'cookie', 'cms']; //'cms'
 
 /*
 | -------------------------------------------------------------------

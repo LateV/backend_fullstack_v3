@@ -77,15 +77,53 @@ class Item_model extends Emerald_model {
     public static function create(array $data)
     {
         App::get_s()->from(self::CLASS_TABLE)->insert($data)->execute();
-
         return new static(App::get_s()->get_insert_id());
     }
 
     public function delete(): bool
     {
-        $this->is_loaded(TRUE);
-        App::get_s()->from(self::CLASS_TABLE)->where(['id' => $this->get_id()])->delete()->execute();
+        if ($this->is_loaded(TRUE) && $this->get_id() != NULL)
+        {
+            $this->is_loaded(TRUE);
+            App::get_s()->from(self::CLASS_TABLE)->where(['id' => $this->get_id()])->delete()->execute();
 
-        return App::get_s()->is_affected();
+            return App::get_s()->is_affected();
+        } else{
+            return FALSE;
+        }        
     }
+
+    /**
+     * @param Item_model $data
+     * @param string $preparation
+     * @return stdClass
+     * @throws Exception
+     */
+    public static function preparation($data, $preparation = 'default')
+    {
+        switch ($preparation)
+        {
+            case 'default':
+                return self::_preparation_default($data);
+            default:
+                throw new Exception('undefined preparation type');
+        }
+    }
+
+    /**
+     * @param Item_model $data
+     * @return stdClass
+     */
+    private static function _preparation_default(Item_model $data)
+    {
+        $o = new stdClass();
+
+        $o->id = $data->get_id();
+        $o->price = $data->get_price();
+        $o->name = $data->get_name();
+
+        return $o;
+    }
+
+    
 }
