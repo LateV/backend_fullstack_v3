@@ -278,11 +278,8 @@ var app = new Vue({
 						}
 				})
 				.then( function ( response )
-					{
-					tmp = self.post.comments;
-					self.post.comments = null;
-					tmp[ 'new' + response.data.comment.id ] = response.data.comment;
-					self.post.comments = tmp;
+				{
+					self.post = response.data.post;
 					$( 'input[id^="addComment"]' ).val('');
 				});
 			}

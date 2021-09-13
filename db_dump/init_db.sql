@@ -82,14 +82,14 @@ CREATE TABLE `boosterpack_info` (
 
 CREATE TABLE `comment` (
   `id` int NOT NULL,
-  `user_id` int UNSIGNED NOT NULL DEFAULT 0,
-  `assign_id` int UNSIGNED NOT 0,
-  `reply_id` int NOT NULL DEFAULT 0,
+  `user_id` int UNSIGNED NOT NULL,
+  `assign_id` int UNSIGNED NOT NULL,
+  `reply_id` int DEFAULT NULL,
   `text` text NOT NULL,
-  `likes` int NOT NULL DEFAULT 0,
+  `likes` int DEFAULT NULL,
   `time_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `time_updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `post_id` int NOT NULL DEFAULT 0
+  `post_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
@@ -221,6 +221,52 @@ ALTER TABLE `post`
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`);
 
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `analytics`
+--
+ALTER TABLE `analytics`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `boosterpack`
+--
+ALTER TABLE `boosterpack`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `boosterpack_info`
+--
+ALTER TABLE `boosterpack_info`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `comment`
+--
+ALTER TABLE `comment`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+--
+-- AUTO_INCREMENT for table `items`
+--
+ALTER TABLE `items`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `post`
+--
+ALTER TABLE `post`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

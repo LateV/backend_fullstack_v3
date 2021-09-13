@@ -1,0 +1,15 @@
+
+2021-09-13 00:51:02 --- Fatal error: Call of Sparrow->execute() throws uncaught Exception: Database error: Field 'id' doesn't have a default value errno: 1364  in /var/www/html/application/models/Comment_model.php:253
+Stack trace:
+#0 /var/www/html/application/models/Comment_model.php(253): Sparrow->execute()
+#1 /var/www/html/application/controllers/Main_page.php(83): Model\Comment_model::create(Array)
+#2 /var/www/html/system/core/CodeIgniter.php(636): Main_page->comment()
+#3 /var/www/html/public/index.php(305): require_once('/var/www/html/s...')
+#4 {main}
+2021-09-13 00:51:03 --- Fatal error: Call of Sparrow->execute() throws uncaught Exception: Database error: Field 'id' doesn't have a default value errno: 1364  in /var/www/html/application/models/Comment_model.php:253
+Stack trace:
+#0 /var/www/html/application/models/Comment_model.php(253): Sparrow->execute()
+#1 /var/www/html/application/controllers/Main_page.php(83): Model\Comment_model::create(Array)
+#2 /var/www/html/system/core/CodeIgniter.php(636): Main_page->comment()
+#3 /var/www/html/public/index.php(305): require_once('/var/www/html/s...')
+#4 {main}
