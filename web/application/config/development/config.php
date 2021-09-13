@@ -390,7 +390,7 @@ $config['sess_regenerate_destroy'] = FALSE;
 
 
 $config['cookie_prefix'] = '';
-$config['cookie_domain'] = '62.171.177.51';
+$config['cookie_domain'] =  DOMAIN;
 $config['cookie_path'] = '/';
 $config['cookie_secure'] = FALSE;
 $config['cookie_httponly'] = FALSE;
