@@ -210,7 +210,7 @@ $config['directory_trigger'] = 'd';
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 'debug';
+$config['log_threshold'] = ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'];
 
 /*
 |--------------------------------------------------------------------------
@@ -221,7 +221,7 @@ $config['log_threshold'] = 'debug';
 | application/logs/ directory. Use a full server path with trailing slash.
 |
 */
-$config['log_path'] = '';
+$config['log_path'] = APPPATH.'cache'.DIRECTORY_SEPARATOR .'log';
 
 /*
 |--------------------------------------------------------------------------
@@ -364,7 +364,7 @@ $config['encryption_key'] = '';
 
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'my_session';
-$config['sess_expiration'] = 3600;
+$config['sess_expiration'] = 0;
 $config['sess_save_path'] = APPPATH.'cache'.DIRECTORY_SEPARATOR .'session';
 $config['sess_match_ip'] = TRUE;
 $config['sess_time_to_update'] = 600;
@@ -390,7 +390,7 @@ $config['sess_regenerate_destroy'] = FALSE;
 
 
 $config['cookie_prefix'] = '';
-$config['cookie_domain'] = DOMAIN;
+$config['cookie_domain'] =  DOMAIN;
 $config['cookie_path'] = '/';
 $config['cookie_secure'] = FALSE;
 $config['cookie_httponly'] = FALSE;

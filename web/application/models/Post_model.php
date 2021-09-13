@@ -149,9 +149,9 @@ class Post_model extends Emerald_Model
     /**
      * @return Comment_model[]
      */
-    public function get_comments():array
+    public function get_comments(int $post_id):array
     {
-       //TODO
+        return Comment_model::get_all_by_assign_id($post_id);
     }
 
     /**
@@ -159,8 +159,6 @@ class Post_model extends Emerald_Model
      */
     public function get_user():User_model
     {
-        $this->is_loaded(TRUE);
-
         if (empty($this->user))
         {
             try {
@@ -185,6 +183,20 @@ class Post_model extends Emerald_Model
         return $this;
     }
 
+    /**
+     * @param int $id
+     *
+     * @return Post_model
+     * @throws Exception
+     */
+    public static function get_post(int $id)
+    {
+        return static::transform_one(App::get_s()->from(self::CLASS_TABLE)
+            ->where('id', $id)
+            ->select()
+            ->one());
+    }
+
     public static function create(array $data)
     {
         App::get_s()->from(self::CLASS_TABLE)->insert($data)->execute();
@@ -193,9 +205,13 @@ class Post_model extends Emerald_Model
 
     public function delete()
     {
-        $this->is_loaded(TRUE);
-        App::get_s()->from(self::CLASS_TABLE)->where(['id' => $this->get_id()])->delete()->execute();
-        return App::get_s()->is_affected();
+        if ($this->is_loaded(TRUE) && $this->get_id() != NULL)
+        {
+            App::get_s()->from(self::CLASS_TABLE)->where(['id' => $this->get_id()])->delete()->execute();
+            return App::get_s()->is_affected();
+        } else{
+            return FALSE;
+        }
     }
 
     /**
@@ -208,14 +224,26 @@ class Post_model extends Emerald_Model
     }
 
     /**
-     * @param User_model $user
-     *
      * @return bool
      * @throws Exception
      */
-    public function increment_likes(User_model $user): bool
+    public function increment_likes(): bool
     {
-        //TODO
+        if ($this->is_loaded(TRUE) && $this->get_id() != NULL)
+        {
+            App::get_s()->from(self::get_table())
+                ->where(['id' => $this->get_id()])
+                ->update(sprintf('likes = likes + %s', App::get_s()->quote(1)))
+                ->execute();
+
+            if ( ! App::get_s()->is_affected())
+            {
+                return FALSE;
+            }
+            return TRUE;
+        } else{
+            return FALSE;
+        }
     }
 
 
@@ -273,11 +301,25 @@ class Post_model extends Emerald_Model
         $o->img = $data->get_img();
 
         $o->user = User_model::preparation($data->get_user(),'main_page');
-        $o->coments = Comment_model::preparation_many($data->get_comments(),'default');
+        $o->comments = Comment_model::preparation_many($data->get_comments($data->get_id()),'default');
+
+        foreach ($o->comments as $v) {
+            if ($v->reply_id != 0) {
+                foreach ($o->comments as $key => $comment) {
+                    if ($comment->id == $v->reply_id) { 
+                        $o->comments[$key]->children[] = $v;
+                    }
+                }
+            }
+        }
+        unset($v);
+        foreach ($o->comments as $k => $v) {
+            if ($v->reply_id != 0) {
+                unset($o->comments[$k]);
+            }
+        }
 
         $o->likes = $data->get_likes();
-
-
         $o->time_created = $data->get_time_created();
         $o->time_updated = $data->get_time_updated();
 

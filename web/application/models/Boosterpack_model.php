@@ -130,6 +130,19 @@ class Boosterpack_model extends Emerald_model
     //////GENERATE
 
     /**
+     * @param int $id
+     *
+     * @return Boosterpack_model
+     */
+    public static function get_boosterpack(int $id): Boosterpack_model
+    {
+        return static::transform_one(App::get_s()->from(self::CLASS_TABLE)
+            ->where('id', $id)
+            ->select()
+            ->one());
+    }
+
+    /**
      * @return Boosterpack_info_model[]
      */
     public function get_boosterpack_info(): array
@@ -173,7 +186,8 @@ class Boosterpack_model extends Emerald_model
      */
     public function open(): int
     {
-        //TODO
+        // ????????
+        //TODO 
     }
 
     /**
@@ -183,7 +197,10 @@ class Boosterpack_model extends Emerald_model
      */
     public function get_contains(int $max_available_likes): array
     {
-        //TODO
+        return static::transform_many(App::get_s()->from('items')
+                                    ->where('price <', $max_available_likes)
+                                    ->select()
+                                    ->many());
     }
 
 
@@ -229,6 +246,18 @@ class Boosterpack_model extends Emerald_model
      */
     private static function _preparation_contains(Boosterpack_model $data): stdClass
     {
-        //TODO
+        $o = new stdClass();
+        
+        if (!$data->is_loaded())
+        {
+            $o->id = NULL;
+        } else {
+            $o->id = $data->get_id();
+            $o->price = $data->get_price();
+            $o->bank = $data->get_bank();
+            $o->us = $data->get_us();
+        }
+
+        return $o;
     }
 }

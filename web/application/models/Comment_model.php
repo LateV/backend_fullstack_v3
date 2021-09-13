@@ -25,6 +25,8 @@ class Comment_model extends Emerald_Model {
     protected $text;
     /** @var int */
     protected $reply_id;
+    /** @var int */
+    protected $post_id;
 
     /** @var string */
     protected $time_created;
@@ -75,6 +77,23 @@ class Comment_model extends Emerald_Model {
         return $this->save('assing_id', $assing_id);
     }
 
+    /**
+     * @return int
+     */
+    public function get_post_id(): int
+    {
+        return $this->post_id;
+    }
+    
+    /**
+     * @param int $post_id
+     * @return bool
+     */
+    public function set_post_id(int $post_id)
+    {
+        $this->post_id = $post_id;
+        return $this->save('post_id', $post_id);
+    }
 
     /**
      * @return string
@@ -200,6 +219,21 @@ class Comment_model extends Emerald_Model {
         return $this->user;
     }
 
+    /**
+     * @param int $id
+     *
+     * @return Comment_model
+     * @throws Exception
+     */
+    public static function get_comment(int $id)
+    {
+        return static::transform_one(App::get_s()->from(self::CLASS_TABLE)
+            ->where('id', $id)
+            ->select()
+            ->one());
+    }
+
+
     function __construct($id = NULL)
     {
         parent::__construct();
@@ -220,13 +254,6 @@ class Comment_model extends Emerald_Model {
         return new static(App::get_s()->get_insert_id());
     }
 
-    public function delete(): bool
-    {
-        $this->is_loaded(TRUE);
-        App::get_s()->from(self::CLASS_TABLE)->where(['id' => $this->get_id()])->delete()->execute();
-        return App::get_s()->is_affected();
-    }
-
     /**
      * @param int $assign_id
      * @return self[]
@@ -234,23 +261,18 @@ class Comment_model extends Emerald_Model {
      */
     public static function get_all_by_assign_id(int $assign_id): array
     {
-        return static::transform_many(App::get_s()->from(self::CLASS_TABLE)->where(['assign_id' => $assign_id])->orderBy('time_created', 'ASC')->many());
-    }
-
-    /**
-     * @param User_model $user
-     *
-     * @return bool
-     * @throws Exception
-     */
-    public function increment_likes(User_model $user): bool
-    {
-        //TODO
+        return static::transform_many(App::get_s()->from(self::CLASS_TABLE)
+                                                ->where(['assign_id' => $assign_id])
+                                                ->orderBy('time_created', 'ASC')
+                                                ->many());
     }
 
     public static function get_all_by_replay_id(int $reply_id)
     {
-        //TODO
+         return static::transform_many(App::get_s()->from(self::CLASS_TABLE)
+                                                    ->where(['reply_id' => $reply_id])
+                                                    ->orderBy('time_created', 'ASC')
+                                                    ->many());
     }
 
     /**
@@ -281,6 +303,9 @@ class Comment_model extends Emerald_Model {
 
         $o->id = $data->get_id();
         $o->text = $data->get_text();
+        $o->post_id = $data->get_post_id();
+        $o->reply_id = $data->get_reply_id();
+        $o->children = [];
 
         $o->user = User_model::preparation($data->get_user(), 'main_page');
 
@@ -292,4 +317,36 @@ class Comment_model extends Emerald_Model {
         return $o;
     }
 
+    public function delete(): bool
+    {
+        if ($this->is_loaded(TRUE) && $this->get_id() != NULL)
+        {
+            App::get_s()->from(self::CLASS_TABLE)->where(['id' => $this->get_id()])->delete()->execute();
+            return App::get_s()->is_affected();
+        } else{
+            return FALSE;
+        } 
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function increment_likes(): bool
+    {
+        if ($this->is_loaded(TRUE) && $this->get_id() != NULL)
+        {
+            App::get_s()->from(self::get_table())
+                ->where(['id' => $this->get_id()])
+                ->update(sprintf('likes = likes + %s', App::get_s()->quote(1)))
+                ->execute();
+            if ( ! App::get_s()->is_affected())
+            {
+                return FALSE;
+            }
+            return TRUE;
+        } else{
+            return FALSE;
+        } 
+    }
 }

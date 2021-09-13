@@ -22,34 +22,34 @@ help:
 init:
 	@make clean
 	@make docker-start
-	@echo "[$$(date '+%Y-%m-%d %H:%M:%S')] Wait 25 seconds to initialize MySQL"
+	@echo "[$$(date '+%Y-%m-%d %H:%M:%S')] Wait 25 seconds to initialize MySQL..."
 	@sleep 25
 	@make mysql-init
 	@make composer-up
 
 clean:
-	-@sudo docker rm $$(docker stop frozeneon-nginx)
-	-@sudo docker rm $$(docker stop frozeneon-php)
-	-@sudo docker rm $$(docker stop frozeneon-phpmyadmin)
-	-@sudo docker rm $$(docker stop frozeneon-mysql)
-	-@sudo rm -Rf data/db/*
+	-@docker rm $$(docker stop frozeneon-nginx)
+	-@docker rm $$(docker stop frozeneon-php)
+	-@docker rm $$(docker stop frozeneon-phpmyadmin)
+	-@docker rm $$(docker stop frozeneon-mysql)
+	-@rm -Rf data/db/*
 
 composer-up:
-	@sudo docker exec -u root -i -w /var/www/html/application $(docker_php) composer install --prefer-source --no-interaction
+	@docker exec -u root -i -w /var/www/html/application $(docker_php) composer install --prefer-source --no-interaction
 
 docker-start:
-	@sudo docker-compose up -d
+	docker-compose up -d
 
 docker-stop:
-	@sudo docker-compose --env-file .env stop
+	@docker-compose --env-file .env stop
 
 gen-certs:
-	@sudo docker run --rm -v $(shell pwd)/etc/ssl:/certificates -e "SERVER=$(NGINX_HOST)" jacoelho/generate-certificate
+	@docker run --rm -v $(shell pwd)/etc/ssl:/certificates -e "SERVER=$(NGINX_HOST)" jacoelho/generate-certificate
 
 logs:
-	@sudo docker-compose logs -f
+	@docker-compose logs -f
 
 mysql-init:
-	@sudo docker exec -i $(docker_mysql) mysql -u"$(MYSQL_ROOT_USER)" -p"$(MYSQL_ROOT_PASSWORD)" test_task < $(MYSQL_DUMPS_DIR)/init_db.sql
+	@docker exec -i $(docker_mysql) mysql -u"$(MYSQL_ROOT_USER)" -p"$(MYSQL_ROOT_PASSWORD)" test_task < $(MYSQL_DUMPS_DIR)/init_db.sql
 
 .PHONY: clean init help
