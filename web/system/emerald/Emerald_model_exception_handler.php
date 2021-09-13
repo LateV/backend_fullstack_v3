@@ -36,6 +36,10 @@ class Emerald_model_exception_handler {
         {
             $error_msg .= sprintf(') throws uncaught %s: %s in %s:%s%sStack trace:%s%s', get_class($ex), $ex->getMessage(), $last_call['file'], $last_call['line'], PHP_EOL, PHP_EOL, $ex->getTraceAsString());
             echo sprintf('<b>Fatal error:</b> %s', str_replace(PHP_EOL, '</br>', $error_msg));
+
+            $error_msg = "\n" . date("Y-m-d H:i:s") . ' --- Fatal error: ' . $error_msg; 
+            file_put_contents('Error_log.txt', print_r($error_msg, true), FILE_APPEND);
+
             error_log($error_msg);
             return;
         }
@@ -69,6 +73,10 @@ class Emerald_model_exception_handler {
         }, array_keys($args), $args));
         $error_msg .= sprintf(') throws uncaught %s: %s in %s:%s%sStack trace:%s%s', get_class($ex), $ex->getMessage(), $last_call['file'], $last_call['line'], PHP_EOL, PHP_EOL, $ex->getTraceAsString());
         echo '<b>Fatal error:</b> ' . str_replace(PHP_EOL, '</br>', $error_msg);
+
+        $error_msg = "\n" . date("Y-m-d H:i:s") . ' --- Fatal error: ' . $error_msg; 
+        file_put_contents('Error_log.txt', print_r($error_msg, true), FILE_APPEND);
         error_log($error_msg);
+
     }
 }

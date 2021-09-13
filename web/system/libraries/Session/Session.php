@@ -271,7 +271,7 @@ class CI_Session {
         {
             ini_set('session.name', $params['cookie_name']);
         }
-
+        
         isset($params['cookie_path']) or $params['cookie_path'] = config_item('cookie_path');
         isset($params['cookie_domain']) or $params['cookie_domain'] = config_item('cookie_domain');
         isset($params['cookie_secure']) or $params['cookie_secure'] = (bool)config_item('cookie_secure');
@@ -304,6 +304,8 @@ class CI_Session {
         ini_set('session.use_strict_mode', 1);
         ini_set('session.use_cookies', 1);
         ini_set('session.use_only_cookies', 1);
+        ini_set('session.save_path', APPPATH.'cache'.DIRECTORY_SEPARATOR .'session');
+        ini_set('session.gc_probability', 1);
 
         $this->_configure_sid_length();
     }
